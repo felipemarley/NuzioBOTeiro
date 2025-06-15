@@ -1,4 +1,3 @@
-# cogs/music_cog.py
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -68,7 +67,6 @@ class MusicCog(commands.Cog):
         state = self.get_server_state(guild.id)
         state['is_active'] = True
 
-        # --- LÓGICA DE BUSCA CORRIGIDA E SIMPLIFICADA ---
         is_direct_link = any(ext in busca for ext in ['.mp3', '.ogg', '.wav', '.m4a'])
         
         queue_items, playlist_title = [], None
@@ -122,7 +120,6 @@ class MusicCog(commands.Cog):
         if state.get('prefetch_task') is None or state['prefetch_task'].done():
             state['prefetch_task'] = self.bot.loop.create_task(self._prefetch_queue(guild.id))
 
-    # --- COMANDOS (Completos e sem alterações necessárias aqui) ---
     @app_commands.command(name="play", description="Toca uma música ou playlist")
     async def slash_play(self, interaction: discord.Interaction, busca: str):
         if not interaction.user.voice:

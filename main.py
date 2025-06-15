@@ -1,15 +1,12 @@
-# main.py
 import os
 import discord
 from discord.ext import commands
 import asyncio
 from dotenv import load_dotenv
 
-# Carrega as variáveis de ambiente
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-# Define as permissões (intents) que o bot precisa
 intents = discord.Intents.default()
 intents.message_content = True
 intents.voice_states = True
@@ -17,12 +14,9 @@ intents.guilds = True
 
 class NuzioBot(commands.Bot):
     def __init__(self):
-        # Inicializa o bot, define o prefixo '!' e desativa o comando de ajuda padrão
         super().__init__(command_prefix='!', intents=intents, help_command=None)
-
     async def setup_hook(self):
         """Este hook é chamado para carregar os cogs e sincronizar os comandos."""
-        # Carrega todos os arquivos .py da pasta 'cogs'
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py') and filename != '__init__.py':
                 try:
@@ -31,7 +25,6 @@ class NuzioBot(commands.Bot):
                 except Exception as e:
                     print(f'❌ Falha ao carregar o cog {filename[:-3]}: {e}')
         
-        # Sincroniza os comandos de barra com o Discord
         try:
             synced = await self.tree.sync()
             print(f'-> {len(synced)} comandos de barra "/" sincronizados.')

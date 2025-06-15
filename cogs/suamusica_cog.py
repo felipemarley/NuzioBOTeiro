@@ -1,4 +1,3 @@
-# cogs/suamusica_cog.py
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -10,7 +9,6 @@ import json
 class SuaMusicaCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        # Acessa o MusicCog para usar o mesmo estado e fila compartilhada
         self.music_cog = self.bot.get_cog('MusicCog')
         if not self.music_cog:
             print("AVISO CRÍTICO: MusicCog não foi encontrado. O SuaMusicaCog não funcionará.")
@@ -20,7 +18,6 @@ class SuaMusicaCog(commands.Cog):
         if not self.music_cog: self.music_cog = self.bot.get_cog('MusicCog')
         return self.music_cog.get_server_state(guild_id)
 
-    # --- TAREFAS BLOQUEANTES QUE SERÃO DELEGADAS PARA NÃO TRAVAR O BOT ---
 
     def scrape_and_parse_suamusica_blocking(self, playlist_url):
         """
@@ -38,8 +35,6 @@ class SuaMusicaCog(commands.Cog):
         data = json.loads(script_tag.string)
         
         try:
-            # --- O CAMINHO CORRETO E DEFINITIVO PARA OS DADOS ---
-            # Baseado no arquivo body.html que você forneceu.
             tracks_data = data['props']['pageProps']['playlist']['files']
         except KeyError as e:
             raise ValueError(f"A estrutura do JSON do site mudou. Chave não encontrada: {e}")
@@ -49,7 +44,6 @@ class SuaMusicaCog(commands.Cog):
             
         queue_items = []
         for track in tracks_data:
-            # O título está na chave 'file' e o ID na chave 'id'
             queue_items.append({
                 'id': track.get('id'),
                 'title': track.get('file', 'Título Desconhecido'),
@@ -63,8 +57,6 @@ class SuaMusicaCog(commands.Cog):
         api_response = requests.get(api_url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
         api_response.raise_for_status()
         return api_response.json().get('link')
-
-    # --- COMANDO PRINCIPAL ---
 
     @app_commands.command(name="suamusica", description="Toca uma playlist do site Sua Música.")
     @app_commands.describe(playlist_url="O link da playlist do Sua Música")
